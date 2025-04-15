@@ -1,0 +1,203 @@
+/* General Styles */
+body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    padding-bottom: 80px; 
+    background-color: #F5F5F5; /* Light Gray */
+    color: #212121; /* Dark Gray */
+}
+
+h1 {
+    font-size: 2.5rem; /* 40px */
+}
+
+h2 {
+    font-size: 2rem; /* 32px */
+}
+
+h3 {
+    font-size: 1.5rem; /* 24px */
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Roboto', sans-serif;
+    color: #2c5f2d; /* Earthy green */
+}
+
+a {
+    text-decoration: none;
+    color: #1B5E20; /* Dark Green */
+    transition: color 0.3s ease;
+}
+
+a:hover {
+    color: #F9A825; /* Golden Yellow */
+}
+
+/* Navbar */
+.navbar {
+    background-color: #1B5E20; /* Dark Green */
+    color: white;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.navbar-brand {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #fff;
+}
+
+.nav-link {
+    color: #fff;
+    font-size: 1rem;
+    margin-right: 10px;
+}
+
+.nav-link:hover {
+    color: #F9A825; /* Golden Yellow */
+}
+
+.nav-link.active {
+    border-bottom: 2px solid #F9A825; /* Highlight active link */
+}
+
+/* Footer */
+footer {
+    background-color: #1B5E20; /* Dark Green */
+    color: white;
+    text-align: center;
+    padding: 10px 0;
+    font-size: 0.9rem;
+}
+
+/* Buttons */
+.btn-primary {
+    background-color: #2E7D32; /* Deep Green */
+    border: none;
+    border-radius: 8px;
+    padding: 12px 24px;
+    font-size: 0.9rem;
+    font-weight: bold;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: #1B5E20; /* Dark Green */
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.btn-secondary {
+    background-color: #F9A825; /* Golden Yellow */
+    border: none;
+    border-radius: 8px;
+    padding: 12px 24px;
+    font-size: 0.9rem;
+    font-weight: bold;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+button.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 16px;
+    height: 16px;
+    border: 2px solid #fff;
+    border-top: 2px solid #F9A825; /* Golden Yellow */
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    transform: translate(-50%, -50%);
+}
+
+@keyframes spin {
+    from {
+        transform: translate(-50%, -50%) rotate(0deg);
+    }
+    to {
+        transform: translate(-50%, -50%) rotate(360deg);
+    }
+}
+
+/* Cards */
+.card {
+    background-color: #FFFFFF;
+    border-radius: 8px;
+    padding: 16px;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: scale(1.02);
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.card-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.card-text {
+    font-size: 1rem;
+    margin-bottom: 16px;
+}
+
+/* Forms */
+input, textarea {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 8px;
+    width: 100%;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+input:focus, textarea:focus {
+    border-color: #A5D6A7; /* Light Green */
+    box-shadow: 0px 0px 4px rgba(165, 214, 167, 0.8);
+}
+
+button[type="submit"] {
+    background-color: #F9A825; /* Golden Yellow */
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 24px;
+    font-size: 0.9rem;
+    font-weight: bold;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+button[type="submit"]:hover {
+    background-color: #F57F17; /* Darker Golden Yellow */
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Ensure the chart container has enough space at the bottom */
+.chart-container {
+    position: relative;
+    margin-bottom: 20px; /* Add space to prevent overlap with the footer */
+}
+
+/* Make the chart responsive */
+canvas {
+    display: block;
+    max-width: 80%;
+    height: auto;
+}
+
+
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}

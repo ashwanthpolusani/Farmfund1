@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Farms{% endblock %}
+{% block farmsactive %}active{% endblock %}
+{% block body %}
+
+  <div class="container my-3">
+    <h1 class="text-center my-3 py-3">Here is the list of farms</h1>
+
+    <div class="row">
+
+    {% for farm in farms %}
+
+        <div class="col-md-4 mb-4"> <!-- Added mb-4 class for padding -->
+            <div class="card" style="width: 18rem;">
+              <div class="card-body">
+                <h5 class="card-title">Crop:  {{farm.crop_name}}</h5>
+                <p class="card-text">{{farm.farm_name}}</p>
+                <p class="card-text"><b>Desc:</b> {{farm.crop_description}}</p>
+                <a href="{% url 'farm_detail' farm.id %}" class="btn btn-primary">View Farm</a>
+              </div>
+            </div>
+          </div>
+
+      {% endfor %}
+
+    </div>
+
+  </div>
+{% endblock %}

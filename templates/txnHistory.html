@@ -1,0 +1,339 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Transaction History{% endblock %}
+{% block txnactive %}active{% endblock %}
+{% block body %}
+
+<link rel="stylesheet" href="{% static 'styles.css' %}">
+<!--link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css"-->
+
+<script src='https://code.jquery.com/jquery-3.6.0.min.js'></script>
+<script src='https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js'></script>
+<script src='https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js'></script>
+<script src="https://cdn.datatables.net/buttons/2.2.3/js/dataTables.buttons.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.2.3/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.2.3/js/buttons.print.min.js"></script>
+
+<style>
+    /* Style only buttons */
+    button {
+        background-color: #2E7D32; /* Deep Green */
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 8px 16px;
+        font-size: 0.9rem;
+        font-weight: bold;
+        transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        margin: 5px; /* Add spacing between buttons */
+    }
+
+    button:hover {
+        background-color: #1B5E20; /* Dark Green */
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    }
+    #myDataTable_wrapper {
+        margin: 0 auto; /* Center align the table */
+        max-width: 90%; /* Limit the table width */
+    }
+
+    /* Style and enhance the lengthChange dropdown */
+    .dataTables_wrapper .dataTables_length {
+        flex: 1; /* Allow it to share space with the search bar */
+        margin-right: 0; /* Reset margin */
+        width: 250px; /* Maintain width */
+        padding: 5px 10px; /* Add padding */
+        font-weight: bold;
+        border-radius: 5px; /* Rounded corners */
+        transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        align-items: left;
+    }
+
+    /* Style for DataTable layout */
+    .dataTables_wrapper .d-flex {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .dataTables_wrapper .table-responsive {
+        overflow-x: auto; /* Ensure horizontal scrolling for smaller screens */
+    }
+
+    .dataTables_wrapper .dataTables_length select {
+        width: auto; /* Adjust dropdown width */
+        margin-right: 10px; /* Add spacing */
+        width: 200px; /* Increase width of the dropdown */
+    }
+    .dataTables_wrapper .dataTables_filter {
+        padding-right: 5px;
+    }
+
+    .dataTables_wrapper .dataTables_filter input {
+        width: auto; /* Adjust search box width */
+        margin-left: 10px; /* Add spacing */
+    }
+
+
+    /* Center align the buttons */
+    .dataTables_wrapper .dt-buttons {
+        display: flex;
+        justify-content: center; /* Center horizontally */
+        align-items: center; /* Center vertically */
+        margin: 0px auto; /* Add spacing and center the buttons */
+    }
+    .dataTables_wrapper .dataTables_info {
+        font-size: 0.9rem; /* Adjust font size for better readability */
+    }
+
+    .dataTables_wrapper .dataTables_paginate {
+        font-size: 0.9rem; /* Adjust font size for pagination */
+    }
+
+
+    /* Add spacing and alignment for the heading */
+    h1 {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    /* Enhance txntable styles for full responsiveness */
+    .txntable {
+        border-collapse: collapse;
+        width: 100%; /* Ensure the table occupies full width */
+        margin: 0 auto; /* Center align the table */
+        overflow-x: auto; /* Enable horizontal scrolling if needed */
+        max-width: 100%; /* Prevent exceeding screen width */
+    }
+
+    .txntable th, .txntable td {
+        border: 1px solid #ddd;
+        padding: 12px; /* Add padding for better readability */
+        text-align: left;
+        font-size: 0.9rem; /* Adjust font size for better readability */
+        word-wrap: break-word; /* Ensure content wraps within cells */
+    }
+
+    .txntable th {
+        background-color: #4CAF50; /* Add a green background for headers */
+        color: white; /* White text for contrast */
+        font-weight: bold;
+        text-align: center; /* Center align header text */
+    }
+
+    .txntable tr:nth-child(even) {
+        background-color: #f9f9f9; /* Add alternating row colors */
+    }
+
+    .txntable tr:hover {
+        background-color: #f1f1f1; /* Highlight row on hover */
+    }  
+    /* Remove border between the icon and amount columns */
+     /* Icon column */
+    .txntable td:nth-child(5) ,
+    .txntable th:nth-child(5)  { /* Amount column */
+        border-right: none; /* Remove right border for the icon column */
+    }
+    .txntable td:nth-child(6) ,
+    .txntable th:nth-child(6) { /* Amount column */
+        border-left: none; /* Remove left border for the amount column */
+        padding-left: 0; /* Remove left padding */
+        margin-left: 0; /* Remove left margin */
+        text-align: left; /* Align text to the left */
+    }
+
+
+   
+    
+table.dataTable thead .sorting,
+table.dataTable thead .sorting_asc,
+table.dataTable thead .sorting_desc,
+table.dataTable thead .sorting_asc_disabled,
+table.dataTable thead .sorting_desc_disabled {
+    cursor: pointer;
+    *cursor: hand;
+    background-repeat: no-repeat;
+    background-position: center right
+}
+
+table.dataTable thead .sorting {
+    background-image: url("{% static 'sort_both.png' %}");
+}
+
+table.dataTable thead .sorting_asc {
+    background-image: url("{% static 'sort_asc.png' %}") !important;
+}
+
+table.dataTable thead .sorting_desc {
+    background-image: url("{% static 'sort_desc.png' %}") !important;
+}
+
+table.dataTable thead .sorting_asc_disabled {
+    background-image: url("{% static 'sort_asc_disabled.png' %}");
+}
+
+table.dataTable thead .sorting_desc_disabled {
+    background-image: url("{% static 'sort_desc_disabled.png' %}");
+}
+
+.fa-long-arrow-down,
+.fa-long-arrow-up {
+  
+}
+.fa-long-arrow-down,
+.fa-long-arrow-up {
+    padding: 0;
+    margin: 0;
+  background-color:rgb(249, 248, 250);
+  position: relative;
+  height: 100%;
+  width: 50%;
+  border-radius: 50%;
+  font-size: 1rem;
+  color: #28df99; /* Green color for up arrow */
+  display: flex; /* Use flexbox for alignment */
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
+}
+
+.fa-long-arrow-up {
+  color:rgba(250, 15, 15, 0.81);
+}
+
+ /* Make the table responsive for mobile screens */
+ @media (max-width: 576px) {
+    .txntable th, .txntable td {
+        padding: 4px; /* Adjust padding for smaller screens */
+        font-size: 0.7rem; 
+    }
+
+    .txntable {
+        overflow-x: auto; /* Ensure horizontal scrolling for small screens */
+        width: 100%; /* Occupy full width */
+        margin: 0; /* Remove any margin */
+        padding: 0; /* Remove any padding */
+    }
+    .container {
+        padding-left: 0; /* Remove left padding */
+        padding-right: 0; /* Remove right padding */
+    }
+    .dataTables_wrapper .dataTables_length {
+        flex: 1; /* Allow it to share space with the search bar */
+        max-width: 50%; /* Reduce its width */
+    }
+
+    .dataTables_wrapper .dataTables_length  select{
+        max-width: 50%; /* Reduce its width */
+    }
+
+    .dataTables_wrapper .dataTables_filter {
+        flex: 1; /* Allow it to share space with other elements */
+        max-width: 100%; /* Ensure it does not exceed the screen width */
+        text-align: center; /* Center align the search bar */
+    }
+
+    .dataTables_wrapper .dataTables_filter input {
+        width: 90%; /* Adjust the width of the search input */
+        margin: 0 auto; /* Center the input field */
+        display: block; /* Ensure it behaves like a block element */
+    }
+
+    .dataTables_wrapper .dt-buttons {
+        margin-top: 10px; /* Add spacing between buttons and other elements */
+    }
+    
+   
+}
+
+/* Ensure the table is centered and occupies full width on larger screens */
+@media (min-width: 768px) {
+    .txntable {
+        max-width: 100%; /* Limit the table width for better appearance */
+    }
+}
+/* Ensure the dropdown and search bar align properly */
+.dataTables_wrapper .dataTables_length,
+.dataTables_wrapper .dataTables_filter {
+    display: flex;
+    align-items: center;
+}
+
+
+
+</style>
+
+
+<div class="container mt-3">
+    <h1 class="text-center my-3 py-3">Here is the list of transactions</h1>
+    <table id="myDataTable" class="txntable" style="width:100%">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Crop</th>
+                <th>Farm</th>
+                <th>Details</th>
+                <th>Type</th>
+                <th></th>
+                <th>Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for txn in transactions %}
+            <tr>
+                <td>{{ txn.date }}</td>
+                <td>{{ txn.crop }}</td>
+                <td>{{ txn.farm }}</td>
+                <td>{{ txn.details }}</td>
+                <td>{{ txn.type }}</td>
+                <td>
+                    {% if txn.type == 'expense' %}
+                        <span><i class="fa fa-long-arrow-up"></i> </span>
+                    {% else %}
+                        <span><i class="fa fa-long-arrow-down"></i> </span>
+                    {% endif %}
+                </td>
+                <td>{{ txn.amount }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script>
+    $(document).ready(function () {
+        // Initialize DataTable
+        $('#myDataTable').DataTable({
+            paging: true,          // Enable pagination
+            //limit pagination and hide rest All
+            pagingType: 'simple', // Enable pagination buttons
+            pageLength: 10,
+            //show only 3 pages hide rest all pages in pagination
+            searching: true,       // Enable search
+            ordering: true,        // Enable sorting
+            info: true,            // Show information
+            lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
+            lengthChange: true,    // Enable the "Show X entries" dropdown only for this table
+            responsive: true,      // Enable responsive design
+            order: [[0, "desc"]],  // Set the initial order
+
+            dom: "<'d-flex justify-content-between align-items-center mb-3'lf>" +
+            "<'d-flex justify-content-between align-items-center mb-3'B>" +
+            "<'table-responsive'tr>" +
+            "<'d-flex justify-content-between align-items-center mt-3'ip>",
+
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ],
+            columnDefs: [
+                { targets: [4], visible: false }, // Hide the "Type" column
+                { targets: [5], orderable: false } // Disable sorting for the icon column
+            ],
+            language: {
+                search: "_INPUT_",
+                searchPlaceholder: "Search records"
+            }
+        });
+    });
+</script>
+{% endblock %}

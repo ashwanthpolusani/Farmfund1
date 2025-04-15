@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}AddFarm{% endblock title %}
+{% block addFarmactive %}active{% endblock addFarmactive %}
+{% block body %}
+
+
+{% if  success %}     
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+  <strong>success!</strong> Your farm has been added to the list
+  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{% endif %}
+
+  
+    <div class="container my-3">
+        <h1 class="text-center my-3 py-3">Add a farm</h1>
+        <form method="POST">
+        {% csrf_token %}
+
+        <div class="mb-3">
+            <label for="crop_name" class="form-label">Crop Name</label>
+            <input type="text" class="form-control" id="crop_name" name="crop_name">
+        </div>
+
+        <div class="mb-3">
+            <label for="farm_name" class="form-label">Farm Name</label>
+            <input type="text" class="form-control" id="farm_name" name="farm_name">
+        </div>
+        
+        <div class="mb-3">
+            <label for="description" class="form-label">Description</label>
+            <input type="text" class="form-control" id="description" name="description">
+        </div>
+
+        <div class="mb-3">
+            <label for="budget" class="form-label">Set Budget</label>
+            <input type="text" class="form-control" id="budget" name="budget">
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+{% endblock body %}

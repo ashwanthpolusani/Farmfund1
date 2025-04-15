@@ -1,0 +1,20 @@
+<!-- filepath: d:\project\django_projects\FarmFund\templates\edit_transaction.html -->
+{% extends 'base.html' %}
+{% block title %}Edit {{ transaction_type|title }}{% endblock %}
+{% block body %}
+<div class="container my-3">
+    <h1 class="text-center">Edit {{ transaction_type|title }}</h1>
+    <form method="POST">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="amount" class="form-label">Amount</label>
+            <input type="number" class="form-control" id="amount" name="amount" value="{{ transaction.amount }}" required>
+        </div>
+        <div class="mb-3">
+            <label for="details" class="form-label">Details</label>
+            <textarea class="form-control" id="details" name="details" rows="3" required>{{ transaction.details }}</textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+    </form>
+</div>
+{% endblock %}

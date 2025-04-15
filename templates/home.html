@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Home{% endblock title %}
+{% block homeactive %}active{% endblock homeactive %}
+{% block body %}
+
+<div class="container my-3">
+    <h1 class="text-center my-3 py-3">Welcome to FarmFund</h1>
+    <p class="text-center">FarmFund is a platform where you can add your farm details and get funding for your farm</p>
+</div>
+
+<div class="container mt-4" id="home">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card p-3 mb-3">Current Total Budget: Rs. {{ total_budget }}/-</div>
+            <div class="card p-3 mb-3">Current Total Expenditure: Rs. {{ total_expenditure }}/-</div>
+            <div class="card p-3">Current Total Income: Rs. {{ total_income }}/-</div>
+        </div>
+        <div class="col-md-6">
+            <h4>Crops</h4>
+            <ul class="list-group">
+                {% for crop in crops %}
+                <li class="list-group-item">{{ forloop.counter }}. {{ crop.crop_name }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <!-- Graphs Section -->
+    <div class="row mt-5">
+        <!-- Crop Budgets Graph -->
+        <div class="col-md-6">
+            <h5 class="text-center">Crop Budgets</h5>
+            <canvas id="cropBudgetsChart"></canvas>
+        </div>
+
+        <!-- Expenditures Graph -->
+        <div class="col-md-6">
+            <h5 class="text-center">Expenditures</h5>
+            <div class="chart-container">
+                <canvas id="expendituresChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="mb-2 py-2"></div>
+
+<script>
+    // Crop Budgets Chart
+    const cropBudgetsCtx = document.getElementById('cropBudgetsChart').getContext('2d');
+    new Chart(cropBudgetsCtx, {
+        type: 'bar',
+        data: {
+            labels: {{ crop_names|safe }}, // Crop names from the database
+            datasets: [{
+                label: 'Budget (Rs)',
+                data: {{ crop_budgets|safe }}, // Crop budgets from the database
+                backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+    // Expenditures Chart
+    const expendituresCtx = document.getElementById('expendituresChart').getContext('2d');
+    new Chart(expendituresCtx, {
+        type: 'pie',
+        data: {
+            labels: {{ expenditure_details|safe }}, // Merged expenditure details
+            datasets: [{
+                label: 'Expenditure (Rs)',
+                data: {{ expenditure_amounts|safe }}, // Merged expenditure amounts
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.5)',
+                    'rgba(54, 162, 235, 0.5)',
+                    'rgba(255, 206, 86, 0.5)',
+                    'rgba(75, 192, 192, 0.5)',
+                    'rgba(153, 102, 255, 0.5)',
+                    'rgba(255, 159, 64, 0.5)'
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(255, 159, 64, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true
+        }
+    });
+</script>
+
+{% endblock body %}
